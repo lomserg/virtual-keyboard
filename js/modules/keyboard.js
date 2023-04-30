@@ -59,4 +59,43 @@ export default class {
         });
         this.keysContainer.append( this.row)
        }
+
+       getKeyDetail(keyboardKey) {
+        return this.keys.find(key => key.code === keyboardKey)
+       }
+
+       keyType(keyCode) {
+        const textarea = document.querySelector('.text');
+        let carriagePosition = textarea.selectionStart;
+        let text = textarea.value
+        let textBeginning = text.slice(0, carriagePosition);
+        const textEnding = text.slice(carriagePosition);
+        let typed = '';
+        if(keyCode.isSpecial) {
+            switch (keyCode.code) {
+                case 'Backspace':
+                    console.log('Backspace')
+                    textBeginning = textBeginning.slice(0, -1);
+                    carriagePosition -= 1;
+                break;
+                case 'Tab':
+                    typed = '\t';
+                    carriagePosition += 1;
+                break;
+                case 'Enter':
+                    typed = '\n';
+                    carriagePosition += 1;
+                break;
+                case 'Space':
+                    typed = ' ';
+                    carriagePosition += 1;
+                break;
+            }
+        }else {
+            typed += keyCode[this.language];
+            carriagePosition += 1;
+          }
+
+          textarea.value = textBeginning + typed + textEnding;
+       }
 }
