@@ -7,6 +7,7 @@ export default class {
       this.textarea = null;
       this.main = null;
       this.keysContainer = null;
+      this.row = null;
       this.createKeyboard();
     }
 
@@ -32,14 +33,30 @@ export default class {
         this.keysContainer = document.createElement('div');
         this.keysContainer.classList.add('keyboard');
         const keysObj = this.keys
-        const row = document.createElement('div');
+        let currentRow;
+        
         keysObj.forEach(key => {
             // console.log(key.name)
+          
+            if(currentRow != key.row) {
+                this.row = document.createElement('div');
+                this.row.classList.add('keyboard__row');
+              this.keysContainer.append( this.row);
+              currentRow = key.row
+            }
             const button = document.createElement('button');
+            if (key.classes) {
+                button.classList = key.classes;
+            }
+            if(key.isSpecial) {
+                button.innerHTML = key.name
+            } else {
+                button.innerHTML = key[this.language];
+            }
+
             button.dataset.keyCode = key.code;
-            button.innerText = key[this.language];
-            row.appendChild(button)
+            this.row.appendChild(button)
         });
-        this.keysContainer.append(row)
+        this.keysContainer.append( this.row)
        }
 }
