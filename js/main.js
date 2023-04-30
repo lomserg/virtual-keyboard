@@ -11,13 +11,15 @@ newKeyboard.init()
 
 document.addEventListener("keydown", e => {
     e.preventDefault();
-    const textarea = document.querySelector('.text');
-    let carriagePosition = textarea.selectionStart;
-
-
     const keyboardKey = e.code
     const keyDetail = newKeyboard.getKeyDetail(keyboardKey)
     newKeyboard.keyType(keyDetail)
+    if(e.ctrlKey) {
+        console.log('cool')
+        if(e.shiftKey) {
+            newKeyboard.switchLanguage()
+            newKeyboard.updateKeys()
+        }
+    }
 
-  
   })
