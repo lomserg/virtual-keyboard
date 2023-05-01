@@ -67,6 +67,7 @@ export default class {
       this.eventHelper(keyCode, eventType)
       console.log(this.pressedBtn)
       this.switchLanguage()
+      this.highLightKeys()
       this.updateKeys()
     }
 
@@ -207,5 +208,13 @@ checkPressed(keyName) {
 
       isPressed(keyboardKey) {
         return (keyboardKey.code === 'CapsLock') ? this.capslockPressed : this.pressedBtn.some((key) => key.includes(keyboardKey.code));
+      }
+
+      highLightKeys() {
+        this.keysContainer.querySelectorAll('button').forEach((button) => {
+          if (!this.isPressed(button.dataset.keyCode)) button.classList.remove('active');
+        });
+        this.pressedBtn.forEach((key) => this.keysContainer.querySelector(`[data-key-code="${key}"]`).classList.add('active'));
+        if (this.capslockPressed) this.keysContainer.querySelector('[data-key-code="CapsLock"]').classList.add('active');
       }
 }
