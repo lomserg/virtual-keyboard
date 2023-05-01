@@ -23,6 +23,14 @@ function eventHandler(e) {
 
   document.addEventListener("keydown", eventHandler)
   document.addEventListener("keyup", eventHandler)
+  document.querySelector('textarea').focus()
+  document.querySelector('.keyboard').addEventListener('mousedown', (e)=> {
+    
+    const keyboardKey = e.target.dataset.keyCode
+    const keyDetail = newKeyboard.getKeyDetail(keyboardKey)
+    newKeyboard.keyType(keyDetail);
+    newKeyboard.utils(keyboardKey, e.type);
+  })
 // document.addEventListener("keydown", e => {
 //     e.preventDefault();
 //     const keyboardKey = e.code
