@@ -148,6 +148,22 @@ checkPressed(keyName) {
                     typed = ' ';
                     carriagePosition += 1;
                 break;
+                case 'ArrowUp':
+                  typed = '↑';
+                  carriagePosition += 1;
+                break;
+                case 'ArrowDown':
+                  typed = '↓';
+                  carriagePosition += 1;
+                break;
+                case 'ArrowLeft':
+                  typed = '←';
+                  carriagePosition += 1;
+                break;
+                case 'ArrowRight':
+                  typed = '→';
+                  carriagePosition += 1;
+                break;
                 }
             } else {
               typed += keyCode[this.language];
