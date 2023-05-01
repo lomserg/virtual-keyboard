@@ -1,7 +1,12 @@
 export default class {
     constructor(keys) {
+      // main props
       this.language = this.getLang();
+      this.pressedBtn = [];
+      this.isPressCaps = false
+      // array
       this.keys = keys;
+      //html element
       this.title = null;
       this.desription = null;
       this.textarea = null;
@@ -9,7 +14,6 @@ export default class {
       this.keysContainer = null;
       this.row = null;
       this.createKeyboard();
-      this.pressed = [];
     }
 
     init() {
@@ -59,19 +63,61 @@ export default class {
                 this.keysContainer.append( this.row)
     }
 
+    utils(keyCode, eventType) {
+      this.eventHelper(keyCode, eventType)
+      console.log(this.pressedBtn)
+      this.switchLanguage()
+      this.updateKeys()
+    }
+
+  // add key code to array
+    addPressKey(keyName) {
+      return this.pressedBtn.push(keyName)
+    }
+  // remove key code to array
+    removePressKey(keyName) {
+    this.pressedBtn.splice(0, this.pressedBtn.length - 1)
+    this.pressedBtn.splice(this.pressedBtn.indexOf(keyName), 1)
+    return this.pressedBtn
+}
+
+checkPressed(keyName) {
+  if(keyName === 'CapsLock') {
+      return this.isPressCaps = true
+  } else {
+      return this.pressedBtn.includes(keyName)
+  }
+
+}
     updateKeys() {
         const btns = this.keysContainer.querySelectorAll('button')
-        console.log(btns)
         btns.forEach((button) => {
             const data = this.getKeyDetail(button.dataset.keyCode);
-            console.log(data)
             if (!data.isSpecial) {
             let updated = data[this.language]
+            if (this.checkPressed('Shift')
+          || (this.checkPressed('Shift') && this.checkPressed('CapsLock'))) {
+            updated = data[`${this.language}Shift`];
+          } else if (this.checkPressed('CapsLock')) {
+            updated = data[this.language].toUpperCase();
+          }
              document.querySelector(`[data-key-code="${data.code}"]`).innerHTML = updated;
+            } else if(this.checkPressed('Shift')) {
+              updated = data[this.language]
             }
           });
       }
-      
+      // shiftUpdateKeys() {
+      //   const btns = this.keysContainer.querySelectorAll('button')
+      //   btns.forEach((button) => {
+      //       const data = this.getKeyDetail(button.dataset.keyCode);
+      //       console.log(data)
+        
+      //       let updated = data[`${this.language}Shift`];
+      //        document.querySelector(`[data-key-code="${data.code}"]`).innerHTML = updated;
+      //       }
+      //     );
+      // }
     keyType(keyCode) {
         const textarea = document.querySelector('.text');
         let carriagePosition = textarea.selectionStart;
@@ -82,7 +128,6 @@ export default class {
           if(keyCode.isSpecial) {
             switch (keyCode.code) {
                 case 'Backspace':
-                    console.log('Backspace')
                     textBeginning = textBeginning.slice(0, -1);
                     carriagePosition -= 1;
                 break;
@@ -106,7 +151,7 @@ export default class {
 
           textarea.value = textBeginning + typed + textEnding;
       }
-
+      // get data from array
        getKeyDetail(keyboardKey) {
         return this.keys.find(key => key.code === keyboardKey)
        }
@@ -127,13 +172,40 @@ export default class {
       }
 
       switchLanguage() {
+        if (this.checkPressed('ShiftLeft') && this.checkPressed('ControlLeft')) {
               this.language = (this.language === 'en') ? 'ru' : 'en';
               this.setLang(this.language);
               console.log(this.language)
+        }
+      }
 
+      eventHelper(keyCode, eventType) {
+        if (keyCode === 'CapsLock') {
+          switch (eventType) {
+            case 'keydown':
+            case 'keyup':
+              this.isPressCaps = !this.isPressCaps;
+              break;
+            default:
+          }
+        } else if (keyCode !== 'CapsLock') {
+          switch (eventType) {
+            case 'keydown':
+              if (!this.checkPressed(keyCode)) {
+                this.addPressKey(keyCode)
+              };
+              break;
+            case 'keyup':
+              if (this.checkPressed(keyCode)) {
+                this.removePressKey(keyCode)
+              }
+              break;
+            default:
+          }
+        }
       }
 
       isPressed(keyboardKey) {
-        return (keyboardKey.code === 'CapsLock') ? this.capslockPressed : this.pressed.some((key) => key.includes(keyboardKey.code));
+        return (keyboardKey.code === 'CapsLock') ? this.capslockPressed : this.pressedBtn.some((key) => key.includes(keyboardKey.code));
       }
 }
