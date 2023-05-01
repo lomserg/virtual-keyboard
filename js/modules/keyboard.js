@@ -25,6 +25,10 @@ export default class {
         this.title = document.createElement('h1');
         this.title.innerText = 'Virtual keyboard'
         this.main.appendChild(this.title)
+         //add title
+         this.text = document.createElement('p');
+         this.text.innerText = 'to switch between language use command: "Ctrl"+"Shift"'
+         this.main.appendChild(this.text)
         //add text area
         this.textarea = document.createElement('textarea');
         this.textarea.classList.add('text');
